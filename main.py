@@ -1,16 +1,42 @@
-from pprint import pprint
+import sys
 from pathlib import Path
+from os.path import exists
+import random
 
 from low_png.image import PngImage
 from low_png.chunk import ChunkType
 
 if __name__ == "__main__":
-    img = PngImage(Path("resources/png-tiny.png"))
+    filepath: Path = None
+    outpath: Path = None
+
+    if len(sys.argv) > 2:
+        filepath = Path(sys.argv[1])
+
+        if not exists(filepath):
+            raise Exception("Input Image does not exist")
+    if len(sys.argv) > 1:
+        outpath = Path(sys.argv[2])
+
+        if exists(outpath):
+            # raise Warning("Output Image does already exist")
+            pass
+
+    if not filepath:
+        raise Exception("Please enter path to Input Image")
+    if not outpath:
+        raise Exception("Please enter path to Output Image")
+
+    img = PngImage(filepath)
     chunks = img.chunks()
 
-    for chunk in chunks:
-        print(chunk.type)
-        if chunk.type == ChunkType.IDAT.name:
-            chunk.data[len(chunk.data)-1] += 1
+    increment_done = False
 
-    img.save(Path("resources") / "out.png")
+    for chunk in chunks:
+        # increment only the last bit of first IDAT chunk
+        if chunk.type == ChunkType.IDAT.name\
+           and not increment_done:
+            chunk.data[len(chunk.data)-1] += 1
+            increment_done = True
+
+    img.save(outpath)
