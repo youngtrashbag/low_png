@@ -1,5 +1,7 @@
 from enum import Enum
 
+from low_png.crc32 import CRC
+
 
 class ChunkType(Enum):
     """
@@ -27,10 +29,30 @@ class Chunk:
         :param data: the data associated with the chunk
         """
         self.position = position
-        self.type = type
-        self.data = data
-        self.crc = crc
+        self.type: str = type
+        self.data: bytearray = data
+        self.crc: bytearray = crc
 
         for t in ChunkType:
             if type == t:
                 self.type = t
+
+    def _recalculate_crc(self):
+        """
+        Recalculates and sets the CRC to the new correct value
+        :return:
+        """
+        data = bytearray(self.type)
+        data.append(self.data)
+
+        self.crc = CRC.updateCRC(data).to_bytes(length=4, byteorder="big", signed=False)
+
+    def to_bytearray(self):
+        data = bytearray()
+
+        data += len(self.data).to_bytes(length=4, byteorder="big", signed=False)
+        data += bytes(self.type, encoding="utf-8")
+        data += self.data
+        data += self.crc
+
+        return data
