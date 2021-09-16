@@ -35,7 +35,6 @@ if __name__ == "__main__":
 
     for chunk in chunks:
         if chunk.type == ChunkType.IHDR.name:
-
             metadata = IHDR.get_metadata(chunk)
             metadata["width"] += 1
             IHDR.set_metadata(chunk, metadata)
