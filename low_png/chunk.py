@@ -33,19 +33,27 @@ class Chunk:
         self.data: bytearray = data
         self.crc: bytearray = crc
 
-        for t in ChunkType:
-            if type == t:
-                self.type = t
-
-    def _recalculate_crc(self):
+    def recalculate_crc(self):
         """
         Recalculates and sets the CRC to the new correct value
         :return:
         """
-        data = bytearray(self.type)
-        data.append(self.data)
+        data = bytearray()
+        # type to bytes
+        data += self.type.encode("utf-8")
+        data += self.data
 
-        self.crc = CRC.updateCRC(data).to_bytes(length=4, byteorder="big", signed=False)
+        crc = CRC(CRC=self.crc)
+        crc.checkCRC(data)
+        new_crc = crc.updateCRC(data)
+
+        self.crc = new_crc.to_bytes(
+            length=4,
+            byteorder="big",
+            signed=False
+        )
+
+        print(self.crc)
 
     def to_bytearray(self):
         data = bytearray()
