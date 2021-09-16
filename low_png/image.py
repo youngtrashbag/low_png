@@ -64,5 +64,3 @@ class PngImage:
         new_file.close()
 
 
-class PngException(Exception):
-    pass
