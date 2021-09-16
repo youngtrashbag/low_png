@@ -4,6 +4,7 @@ CRC32 Algorithm
 Kindly borrowed by [Hedroed](https://github.com/Hedroed/png-parser)
 """
 
+
 class CRC():
     CRC_TABLE = None
 

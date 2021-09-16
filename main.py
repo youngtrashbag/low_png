@@ -5,7 +5,7 @@ import random
 
 from low_png.image import PngImage
 from low_png.chunk import ChunkType
-from helper.metadata import IHDR_metadata
+from helper import IHDR
 
 if __name__ == "__main__":
     filepath: Path = None
@@ -34,14 +34,10 @@ if __name__ == "__main__":
     increment_done = False
 
     for chunk in chunks:
-        # increment only the last bit of first IDAT chunk
-        if chunk.type == ChunkType.IDAT.name\
-           and not increment_done:
-            chunk.data[len(chunk.data)-1] += 1
-            increment_done = True
-
         if chunk.type == ChunkType.IHDR.name:
-            from pprint import pprint
-            pprint(IHDR_metadata(chunk))
+
+            metadata = IHDR.get_metadata(chunk)
+            metadata["width"] += 1
+            IHDR.set_metadata(chunk, metadata)
 
     img.save(outpath)
