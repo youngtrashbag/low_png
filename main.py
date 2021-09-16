@@ -5,6 +5,7 @@ import random
 
 from low_png.image import PngImage
 from low_png.chunk import ChunkType
+from helper.metadata import IHDR_metadata
 
 if __name__ == "__main__":
     filepath: Path = None
@@ -38,5 +39,9 @@ if __name__ == "__main__":
            and not increment_done:
             chunk.data[len(chunk.data)-1] += 1
             increment_done = True
+
+        if chunk.type == ChunkType.IHDR.name:
+            from pprint import pprint
+            pprint(IHDR_metadata(chunk))
 
     img.save(outpath)
