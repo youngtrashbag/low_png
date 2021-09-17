@@ -8,6 +8,7 @@ from low_png.chunk import ChunkType
 from helper import IHDR
 
 if __name__ == "__main__":
+    # correct and robust validation
     filepath: Path = None
     outpath: Path = None
 
