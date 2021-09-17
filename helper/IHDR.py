@@ -13,12 +13,13 @@ def get_metadata(c: Chunk) -> Dict[str, int]:
     return dict of metadata from IHDR Chunk
 
     the following values are in the dict
-    - width
-    - height
-    - bit depth
-    - compression method
-    - filter method
-    - interlace method
+    - `width`
+    - `height`
+    - `color_type`
+    - `bit_depth`
+    - `compression_method`
+    - `filter_method`
+    - `interlace_method`
 
     :param c: IHDR Chunk
     :return: Dict[str, int]
@@ -34,17 +35,20 @@ def get_metadata(c: Chunk) -> Dict[str, int]:
         "height": int.from_bytes(
             c.data[4:8], byteorder="big", signed=False
         ),
-        "bit_depth": int.from_bytes(
+        "color_type": int.from_bytes(
             c.data[8:9], byteorder="big", signed=False
         ),
-        "compression_method": int.from_bytes(
+        "bit_depth": int.from_bytes(
             c.data[9:10], byteorder="big", signed=False
         ),
-        "filter_method": int.from_bytes(
+        "compression_method": int.from_bytes(
             c.data[10:11], byteorder="big", signed=False
         ),
-        "interlace_method": int.from_bytes(
+        "filter_method": int.from_bytes(
             c.data[11:12], byteorder="big", signed=False
+        ),
+        "interlace_method": int.from_bytes(
+            c.data[12:13], byteorder="big", signed=False
         ),
     }
 
@@ -57,9 +61,10 @@ def set_metadata(c: Chunk, metadata: Dict[str, int]) -> Dict[str, int]:
 
     c.data[0:4] = metadata["width"].to_bytes(length=4, byteorder="big", signed=False)
     c.data[4:8] = metadata["height"].to_bytes(length=4, byteorder="big", signed=False)
-    c.data[8:9] = metadata["bit_depth"].to_bytes(length=1, byteorder="big", signed=False)
-    c.data[9:10] = metadata["compression_method"].to_bytes(length=1, byteorder="big", signed=False)
-    c.data[10:11] = metadata["filter_method"].to_bytes(length=1, byteorder="big", signed=False)
-    c.data[11:12] = metadata["interlace_method"].to_bytes(length=1, byteorder="big", signed=False)
+    c.data[8:9] = metadata["color_type"].to_bytes(length=1, byteorder="big", signed=False)
+    c.data[9:10] = metadata["bit_depth"].to_bytes(length=1, byteorder="big", signed=False)
+    c.data[10:11] = metadata["compression_method"].to_bytes(length=1, byteorder="big", signed=False)
+    c.data[11:12] = metadata["filter_method"].to_bytes(length=1, byteorder="big", signed=False)
+    c.data[12:13] = metadata["interlace_method"].to_bytes(length=1, byteorder="big", signed=False)
 
     c.recalculate_crc()
