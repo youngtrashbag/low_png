@@ -8,6 +8,7 @@ from low_png.chunk import ChunkType
 from helper import IHDR
 
 if __name__ == "__main__":
+    # correct and robust validation
     filepath: Path = None
     outpath: Path = None
 
@@ -31,12 +32,15 @@ if __name__ == "__main__":
     img = PngImage(filepath)
     chunks = img.chunks()
 
-    increment_done = False
+    IDAT_read = False
 
     for chunk in chunks:
-        if chunk.type == ChunkType.IHDR.name:
-            metadata = IHDR.get_metadata(chunk)
-            metadata["width"] += 1
-            IHDR.set_metadata(chunk, metadata)
+        # if chunk is first occurring IDAT in file
+        if chunk.type == ChunkType.IDAT.name and not IDAT_read:
+            length = len(chunk.data)
+            # increment the last byte by 1 bit
+            chunk.data[length - 1] += 1
+
+            IDAT_read = True
 
     img.save(outpath)
