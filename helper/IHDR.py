@@ -5,14 +5,23 @@ from low_png.exceptions import ChunkException
 
 
 def is_IHDR(c: Chunk) -> bool:
+    """
+    Returns false, if the Chunk type you passed is not equal to "IHDR"
+
+    :param c: Chunk
+    :return:
+    """
     return c.type == ChunkType.IHDR.name
 
 
 def get_metadata(c: Chunk) -> Dict[str, int]:
     """
-    return dict of metadata from IHDR Chunk
+    Return Dict of metadata from IHDR Chunk
+
+    (will fail if Chunk is not of type IHDR)
 
     the following values are in the dict
+
     - `width`
     - `height`
     - `color_type`
@@ -21,7 +30,7 @@ def get_metadata(c: Chunk) -> Dict[str, int]:
     - `filter_method`
     - `interlace_method`
 
-    :param c: IHDR Chunk
+    :param c: Chunk
     :return: Dict[str, int]
     """
 
@@ -56,6 +65,15 @@ def get_metadata(c: Chunk) -> Dict[str, int]:
 
 
 def set_metadata(c: Chunk, metadata: Dict[str, int]) -> Dict[str, int]:
+    """
+    Set the metadata of Chunk
+
+    (will fail if Chunk is not of type IHDR)
+
+    :param c: Chunk
+    :param metadata: Dict[str, int]
+    :return:
+    """
     if not is_IHDR(c):
         raise ChunkException("Chunk metadata cannot be set.\nChunk is not IHDR")
 

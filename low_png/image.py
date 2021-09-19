@@ -2,11 +2,18 @@ from typing import List
 from pathlib import Path
 
 from low_png.chunk import Chunk, ChunkType
+from low_png.exceptions import PngException
 
 PNG_SIGNATURE: bytes = b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"
 
 
 class PngImage:
+    """
+    PngImage
+
+    Will open a valid PNG File
+    """
+
     def __init__(self, filepath: Path):
         self._file = open(filepath, "rb")
         signature = self._file.read(8)
@@ -21,7 +28,9 @@ class PngImage:
     def next_chunk(self) -> Chunk:
         """
         Read the next chunk in the image.
+
         Handles all complex cases, e.g. if `IEND` Header is "discovered"
+
         :return: Chunk Object
         """
         position = self._file.tell()
@@ -41,7 +50,9 @@ class PngImage:
     def chunks(self):
         """
         Return List of all Chunks.
+
         If Chunks have not yet been read until `IEND` Header, they will be processed and returned
+
         :return: List of Chunks
         """
         while self._IEND_discovered is not True:
@@ -51,8 +62,8 @@ class PngImage:
 
     def save(self, path: Path):
         """
-        Build the new file out of the Chunks.
-        Save it
+        Build the new file out of the Chunks and save it
+
         :return:
         """
         new_file = open(path, "wb+")

@@ -251,3 +251,4 @@ cython_debug/
 
 # folder containing test images
 resources
+/ignore_this_testing_file.py

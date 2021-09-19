@@ -17,6 +17,7 @@ class ChunkType(Enum):
 class Chunk:
     """
     Chunk
+
     Holds all data relevant for a Chunk
 
     The reason size is not included is because it can easily be viewed with `len(self.data)`
@@ -24,6 +25,7 @@ class Chunk:
     def __init__(self, position: int, type: str, data: bytearray, crc: bytearray):
         """
         Initializing a Chunk
+
         :param position: the starting position (the first of 4 length bytes)
         :param type: the chunk type
         :param data: the data associated with the chunk
@@ -36,6 +38,7 @@ class Chunk:
     def recalculate_crc(self):
         """
         Recalculates and sets the CRC to the new correct value
+
         :return:
         """
         data = bytearray()
@@ -54,6 +57,12 @@ class Chunk:
         )
 
     def to_bytearray(self):
+        """
+        All Chunk data is converted into bytearray,
+        and pieced back together into a valid Chunk on byte level
+
+        :return: bytearray
+        """
         data = bytearray()
 
         data += len(self.data).to_bytes(length=4, byteorder="big", signed=False)
