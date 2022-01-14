@@ -2,7 +2,7 @@ from typing import List
 from pathlib import Path
 
 from low_png.chunk import Chunk, ChunkType
-from low_png.exceptions import PngException
+from low_png.error import PngError
 
 PNG_SIGNATURE: bytes = b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A"
 
@@ -23,7 +23,7 @@ class PngImage:
 
         if signature != PNG_SIGNATURE:
             self._file.close()
-            PngException("The file you opened is not a valid PNG file")
+            PngError("The file you opened is not a valid PNG file")
 
     def next_chunk(self) -> Chunk:
         """

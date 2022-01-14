@@ -1,7 +1,7 @@
 from typing import Dict
 
 from low_png.chunk import Chunk, ChunkType
-from low_png.exceptions import ChunkException
+from low_png.error import IncorrectChunkError
 
 
 def is_IHDR(c: Chunk) -> bool:
@@ -35,7 +35,7 @@ def get_metadata(c: Chunk) -> Dict[str, int]:
     """
 
     if not is_IHDR(c):
-        raise ChunkException("Chunk metadata cannot be read.\nChunk is not IHDR")
+        raise IncorrectChunkError("Chunk metadata cannot be read.\nChunk is not IHDR")
 
     metadata: Dict[str, int] = {
         "width": int.from_bytes(
@@ -75,7 +75,7 @@ def set_metadata(c: Chunk, metadata: Dict[str, int]) -> Dict[str, int]:
     :return:
     """
     if not is_IHDR(c):
-        raise ChunkException("Chunk metadata cannot be set.\nChunk is not IHDR")
+        raise IncorrectChunkError("Chunk metadata cannot be set.\nChunk is not IHDR")
 
     c.data[0:4] = metadata["width"].to_bytes(length=4, byteorder="big", signed=False)
     c.data[4:8] = metadata["height"].to_bytes(length=4, byteorder="big", signed=False)
